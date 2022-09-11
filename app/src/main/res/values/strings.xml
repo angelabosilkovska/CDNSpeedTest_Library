@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">KotlinLibaryApplication</string>
+    <string name="title"><b>CDN Speed Test</b></string>
+    <string name="test">Test</string>
+    <string name="results">Results:</string>
+    <string name="cdn_name">CDN Name: %1$s</string>
+    <string name="cdn_speed">CDN Speed: %1$s ms</string>
+    <string name="cdn_price">CDN Price: %1$s</string>
+    <string name="cdn_country">Country: %1$s</string>
+    <string name="cdn_weight">CDN Weight: %1$s</string>
+    <string name="cdn_ID">CDN ID: %1$s</string>
+    <string name="cdn_Url">CDN URL: %1$s</string>
+    <string name="cdn_Error">Error: %1$s</string>
 </resources>

@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.android.example.kotlinlibaryapplication"
-        minSdk 26
+        minSdk 29
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -33,6 +33,10 @@ android {
 
 dependencies {
 
+    implementation project(':CDNSpeedTest')
+
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
     implementation 'com.localebro:okhttpprofiler:1.0.8'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3;'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'

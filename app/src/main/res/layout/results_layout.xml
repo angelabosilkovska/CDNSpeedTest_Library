@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/results_card"
+    android:layout_width="290dp"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="15dp"
+    app:cardUseCompatPadding="true"
+    app:cardPreventCornerOverlap="true"
+    app:cardElevation="8dp"
+    app:cardMaxElevation="10dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.2" >
+        </Space>
+
+        <TextView
+            android:id="@+id/cdnName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#29A0B1"
+            android:layout_gravity="center"
+            android:text="@string/cdn_name"
+            />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" >
+        </Space>
+
+        <TextView
+            android:id="@+id/cdnSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#29A0B1"
+            android:layout_gravity="center"
+            android:text="@string/cdn_speed"
+            />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" >
+        </Space>
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#29A0B1"
+            android:layout_gravity="center"
+            android:text="@string/cdn_price"
+            />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" >
+        </Space>
+
+        <TextView
+            android:id="@+id/weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#29A0B1"
+            android:layout_gravity="center"
+            android:text="@string/cdn_weight"
+            />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" >
+        </Space>
+
+        <TextView
+            android:id="@+id/cdnId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#29A0B1"
+            android:layout_gravity="center"
+            android:text="@string/cdn_ID"
+            />
+
+<!--        <Space-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="0.5" >-->
+<!--        </Space>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/cdnUrl"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="20sp"-->
+<!--            android:textColor="#29A0B1"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="@string/cdn_Url"-->
+<!--            />-->
+
+            <Space
+                android:id="@+id/spaceError"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="0.5" >
+            </Space>
+
+            <TextView
+                android:id="@+id/cdnError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="#29A0B1"
+                android:layout_gravity="center"
+                />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.2" >
+        </Space>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

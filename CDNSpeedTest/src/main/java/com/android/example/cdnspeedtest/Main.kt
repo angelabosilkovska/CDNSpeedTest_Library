@@ -1,20 +1,42 @@
 package com.android.example.cdnspeedtest
 
+import android.content.Context
 import android.util.Log
-import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
-import okhttp3.OkHttpClient
+import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableList
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import retrofit2.*
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-
+import kotlin.math.log
+import com.segment.analytics.kotlin.android.Analytics
+import com.segment.analytics.kotlin.core.*
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class CDN {
+
+    constructor(segmentKey: String,ctx: Context){
+        initSegment(segmentKey,ctx)
+    }
+
     val retrofitBuilder = RetrofitBuilder()
     var resultsUrl:String = ""
+    private lateinit var analytics:Analytics
 
-    fun getCdnList(){
+    private fun initSegment(key:String, ctx:Context){
+        analytics = Analytics(key, ctx){
+
+        }
+    }
+
+    fun checkCdnSpeed(giveMeRes:(ArrayList<Results>)-> ArrayList<Results>) {
+
         val call: Call<GetEndpointsModel> = retrofitBuilder.apiInterface.getEndpoints()
         call.enqueue(object : Callback<GetEndpointsModel> {
             override fun onResponse(
@@ -24,8 +46,8 @@ class CDN {
                 if(response.isSuccessful){
                     println("Responseee body"+ response.body()?.servers)
                     val myEndpoints: List<UrlModel> = response.body()!!.servers
-                    resultsUrl = response.body()!!.reportingURL;
-                    testCDNList(myEndpoints)
+                    resultsUrl = response.body()!!.reportingURL
+                    testCDNList(myEndpoints, giveMeRes)
                 } else {
                     println("Responseee unsuccessfull")
                 }
@@ -36,27 +58,35 @@ class CDN {
             }
         })
     }
-    fun testCDNList(myEndpoints: List<UrlModel>){
-//        val requests = ArrayList<Call<*>>()
 
-        var result = ArrayList<Results>()
-//        var apiInterface: ApiInterface = retrofit.create(ApiInterface::class.java)
-        var builder: OkHttpClient.Builder = OkHttpClient.Builder()
-            // .authenticator(AccessTokenAuthenticator())
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
-            .addInterceptor(OkHttpProfilerInterceptor())
-        //  .addNetworkInterceptor(OnlineInterceptor())
-        Log.i("Hey","ovde")
-        var okHttpClient: OkHttpClient = builder.build()
+    fun testCDNList(myEndpoints: List<UrlModel>, giveMeRes:( ArrayList<Results>)-> ArrayList<Results>){
+
+//        var result = ArrayList<Results>()
+        val result: ObservableList<Results> = ObservableArrayList<Results>()
+        result.addOnListChangedCallback(object: ObservableList.OnListChangedCallback<ObservableList<Results>>(){
+            override fun onChanged(sender: ObservableList<Results>?) {}
+
+            override fun onItemRangeChanged(sender: ObservableList<Results>?, positionStart: Int, itemCount: Int) {}
+
+            override fun onItemRangeInserted(sender: ObservableList<Results>?, positionStart: Int, itemCount: Int) {
+                if(positionStart == myEndpoints.size-1){
+                    val finallRes = ArrayList(sender)
+                    sendResultsBack(finallRes)
+                    giveMeRes(finallRes)
+                }
+            }
+
+            override fun onItemRangeMoved(sender: ObservableList<Results>?, fromPosition: Int, toPosition: Int, itemCount: Int) {}
+
+            override fun onItemRangeRemoved(sender: ObservableList<Results>?, positionStart: Int, itemCount: Int) {}
+        })
+
         myEndpoints.forEach{res ->
-
             var retrofit = Retrofit.Builder()
                 .baseUrl(res.url+"/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(okHttpClient)
+                .client(retrofitBuilder.okHttpClient)
                 .build()
 
             var apiInterface: ApiInterface = retrofit.create(ApiInterface::class.java)
@@ -68,30 +98,36 @@ class CDN {
                     response: Response<UrlModel>
                 ) {
                     if(response.isSuccessful){
-                        println("res sent: "+ response.raw().sentRequestAtMillis + "res rec: "+ response.raw().receivedResponseAtMillis )
+                        println("res sent: "+ response.raw().sentRequestAtMillis + "res rec: "+ response.raw().receivedResponseAtMillis)
                         val rezultat = (response.raw().receivedResponseAtMillis - response.raw().sentRequestAtMillis)
                         println("Result: "+ rezultat)
-//                        testCDNList(response.body()!!)
                         result.add(Results(rezultat,res.id,res.name,res.weight,res.price,res.url))
-                        if(myEndpoints.size == result.size){
-                           sendResultsBack(result)
-                            println("site rezulstati"+ result.toString())
-
-                        }
                     } else {
+                        result.add(Results(null,res.id,res.name,res.weight,res.price,res.url, errors = response.code().toString()))
                         println("Responseee unsuccessfull")
                     }
                 }
 
                 override fun onFailure(call: Call<UrlModel>, t: Throwable) {
+                    result.add(Results(null,res.id,res.name,res.weight,res.price,res.url, errors = t.toString()))
                     println("Responseee error 2"+t)
                 }
             })
-
         }
     }
-    private fun sendResultsBack(rez: ArrayList<Results>){
-    Log.i("Hey",resultsUrl)
+
+    private fun sendResultsBack(rez: List<Results>){
+
+        rez.forEach{
+        analytics.track("CDNSpeedTest", buildJsonObject {
+            put("CDN Name", it.name)
+            put("CDN ID", it.id)
+            put("CDN URL", it.url)
+            put("CDN Speed", it.time)
+            put("CDN Weight", it.weight)
+            put("CDN Price", it.price)
+        })}
+
         var retrofit = Retrofit.Builder()
             .baseUrl("$resultsUrl/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -105,8 +141,7 @@ class CDN {
         call.enqueue(object : Callback<List<Results>> {
             override fun onResponse(
                 call: Call<List<Results>>,
-                response: Response<List<Results>>
-            ) {
+                response: Response<List<Results>>) {
                 if(response.isSuccessful){
                     println("Responseee isSuccessful")
                 } else {

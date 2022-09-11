@@ -18,8 +18,4 @@ interface ApiInterface {
 
     @POST(".")
     fun sendResults(@Body results: List<Results>) :Call<List<Results>>
-
-//    @GET("users/{user}")
-//    fun getUser(@Path("user") user: String?): Observable<User?>?
-
 }

@@ -27,10 +27,14 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    dataBinding{
+        enabled = true
+    }
 }
 
 dependencies {
 
+    implementation 'com.segment.analytics.kotlin:android:1.8.0'
     implementation 'com.localebro:okhttpprofiler:1.0.8'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3;'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'

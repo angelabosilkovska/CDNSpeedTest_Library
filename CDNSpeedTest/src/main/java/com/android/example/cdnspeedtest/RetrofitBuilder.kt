@@ -28,7 +28,7 @@ class RetrofitBuilder {
 
     var retrofit = Retrofit.Builder()
 
-        .baseUrl("http://192.168.1.105:3000/")
+        .baseUrl("http://192.168.0.102:3000/")
         .addConverterFactory(GsonConverterFactory.create(gson))
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(okHttpClient)
