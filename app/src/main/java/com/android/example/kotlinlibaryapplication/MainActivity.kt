@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     var testButton: Button? = null
     var recyclerResults: RecyclerView? = null
-//    val resultsModelArrayList: ArrayList<ResultsModel>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +40,6 @@ class MainActivity : AppCompatActivity() {
                 )
             }
             resultsModelArrayList.sortBy { it.cdnSpeed }
-//            resultsModelArrayList.sortedBy { it.cdnPrice }
             val resultsAdapter = ResultsAdapter(applicationContext, resultsModelArrayList)
             val linearLayoutManager = LinearLayoutManager(
                 applicationContext,

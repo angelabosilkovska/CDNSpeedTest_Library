@@ -33,7 +33,6 @@ class ResultsAdapter(private var context: Context?, cardsModelArrayList: ArrayLi
         val cdnId: TextView
         val cdnError: TextView
         var space: Space
-//        val cdnUrl: TextView
 
         init {
             cdnName = itemView.findViewById(R.id.cdnName)
@@ -43,7 +42,6 @@ class ResultsAdapter(private var context: Context?, cardsModelArrayList: ArrayLi
             cdnId = itemView.findViewById(R.id.cdnId)
             cdnError = itemView.findViewById(R.id.cdnError)
             space = itemView.findViewById(R.id.spaceError)
-//            cdnUrl = itemView.findViewById(R.id.cdnUrl)
         }
     }
 
@@ -67,7 +65,6 @@ class ResultsAdapter(private var context: Context?, cardsModelArrayList: ArrayLi
             holder.cdnError.visibility = View.GONE
             holder.space.visibility = View.GONE
         }
-//        holder.cdnUrl.text = context!!.getString(R.string.cdn_Url, model.cdnUrl)
     }
 
     override fun getItemCount(): Int {

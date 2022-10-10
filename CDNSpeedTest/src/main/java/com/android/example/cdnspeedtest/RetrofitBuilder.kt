@@ -12,12 +12,10 @@ import java.util.concurrent.TimeUnit
 class RetrofitBuilder {
 
     var builder: OkHttpClient.Builder = OkHttpClient.Builder()
-       // .authenticator(AccessTokenAuthenticator())
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
         .addInterceptor(OkHttpProfilerInterceptor())
-      //  .addNetworkInterceptor(OnlineInterceptor())
 
     var okHttpClient: OkHttpClient = builder.build()
 
@@ -28,7 +26,7 @@ class RetrofitBuilder {
 
     var retrofit = Retrofit.Builder()
 
-        .baseUrl("http://192.168.0.102:3000/")
+        .baseUrl("http://192.168.0.104:3000/")
         .addConverterFactory(GsonConverterFactory.create(gson))
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(okHttpClient)

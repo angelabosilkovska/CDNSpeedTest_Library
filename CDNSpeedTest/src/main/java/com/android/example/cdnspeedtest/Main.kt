@@ -21,8 +21,11 @@ import kotlin.collections.ArrayList
 
 class CDN {
 
-    constructor(segmentKey: String,ctx: Context){
-        initSegment(segmentKey,ctx)
+    var key: String = ""
+
+    constructor(appKey: String,ctx: Context){
+        key = appKey
+        initSegment(key,ctx)
     }
 
     val retrofitBuilder = RetrofitBuilder()
@@ -37,7 +40,7 @@ class CDN {
 
     fun checkCdnSpeed(giveMeRes:(ArrayList<Results>)-> ArrayList<Results>) {
 
-        val call: Call<GetEndpointsModel> = retrofitBuilder.apiInterface.getEndpoints()
+        val call: Call<GetEndpointsModel> = retrofitBuilder.apiInterface.getEndpoints(key)
         call.enqueue(object : Callback<GetEndpointsModel> {
             override fun onResponse(
                 call: Call<GetEndpointsModel>,
