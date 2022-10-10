@@ -39,7 +39,6 @@ class CDN {
     }
 
     fun checkCdnSpeed(giveMeRes:(ArrayList<Results>)-> ArrayList<Results>) {
-
         val call: Call<GetEndpointsModel> = retrofitBuilder.apiInterface.getEndpoints(key)
         call.enqueue(object : Callback<GetEndpointsModel> {
             override fun onResponse(
@@ -52,11 +51,22 @@ class CDN {
                     resultsUrl = response.body()!!.reportingURL
                     testCDNList(myEndpoints, giveMeRes)
                 } else {
-                    println("Responseee unsuccessfull")
+                    val emptyArray = ArrayList<Results>()
+                    val error = response.message()+" "+response.code()
+                    emptyArray.add(
+                        Results(null, null, null, null, null, null, error)
+                    )
+                    giveMeRes(emptyArray)
+                    println("Responseee unsuccessfull "+response.message()+response.code())
                 }
             }
 
             override fun onFailure(call: Call<GetEndpointsModel>, t: Throwable) {
+                val emptyArray = ArrayList<Results>()
+                emptyArray.add(
+                    Results(null, null, null, null, null, null, t.toString())
+                )
+                giveMeRes(emptyArray)
                 println("Responseee error 1 "+t)
             }
         })
@@ -64,7 +74,6 @@ class CDN {
 
     fun testCDNList(myEndpoints: List<UrlModel>, giveMeRes:( ArrayList<Results>)-> ArrayList<Results>){
 
-//        var result = ArrayList<Results>()
         val result: ObservableList<Results> = ObservableArrayList<Results>()
         result.addOnListChangedCallback(object: ObservableList.OnListChangedCallback<ObservableList<Results>>(){
             override fun onChanged(sender: ObservableList<Results>?) {}
@@ -73,9 +82,9 @@ class CDN {
 
             override fun onItemRangeInserted(sender: ObservableList<Results>?, positionStart: Int, itemCount: Int) {
                 if(positionStart == myEndpoints.size-1){
-                    val finallRes = ArrayList(sender)
-                    sendResultsBack(finallRes)
-                    giveMeRes(finallRes)
+                    val finalRes = ArrayList(sender)
+                    sendResultsBack(finalRes)
+                    giveMeRes(finalRes)
                 }
             }
 

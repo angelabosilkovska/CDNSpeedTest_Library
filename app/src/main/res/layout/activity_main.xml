@@ -58,71 +58,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/results" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/cdnName"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="20sp"-->
-<!--        android:textColor="#29A0B1"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/guideline2"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/results"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/cdnSpeed"-->
-<!--        />-->
+    <TextView
+        android:id="@+id/noResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No results for this app key"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/results"/>
 
-<!--    <TextView-->
-<!--        android:id="@+id/cdnSpeed"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="20sp"-->
-<!--        android:textColor="#29A0B1"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/guideline2"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/cdnName"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/price"-->
-<!--        />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/price"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="20sp"-->
-<!--        android:textColor="#29A0B1"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/guideline2"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/cdnSpeed"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/country"-->
-<!--        />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/country"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="20sp"-->
-<!--        android:textColor="#29A0B1"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/guideline2"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/price"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/weight"-->
-<!--        />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/weight"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="20sp"-->
-<!--        android:textColor="#29A0B1"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/guideline2"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/country"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/timeSend"-->
-<!--        />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/timeSend"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="20sp"-->
-<!--        android:textColor="#29A0B1"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/guideline2"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/weight"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/guideline3"-->
-<!--        />-->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/results"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
