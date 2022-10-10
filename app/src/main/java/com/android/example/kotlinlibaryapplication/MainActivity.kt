@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                 var resultsModelArrayList = ArrayList<ResultsModel>()
                 for (result in rez) {
                     resultsModelArrayList.add(
-                        ResultsModel(result.id, result.name, result.time, result.price, result.weight, result.url, result.errors)
+                        ResultsModel(result.id, result.name, result.time, result.score, result.price, result.weight, result.url, result.errors)
                     )
                 }
                 resultsModelArrayList.sortBy { it.cdnSpeed }

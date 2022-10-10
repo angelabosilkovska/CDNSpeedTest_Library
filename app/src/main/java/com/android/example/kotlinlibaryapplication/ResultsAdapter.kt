@@ -28,6 +28,7 @@ class ResultsAdapter(private var context: Context?, cardsModelArrayList: ArrayLi
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cdnName: TextView
         val cdnSpeed: TextView
+        val cdnScore: TextView
         val price: TextView
         val weight: TextView
         val cdnId: TextView
@@ -37,6 +38,7 @@ class ResultsAdapter(private var context: Context?, cardsModelArrayList: ArrayLi
         init {
             cdnName = itemView.findViewById(R.id.cdnName)
             cdnSpeed = itemView.findViewById(R.id.cdnSpeed)
+            cdnScore = itemView.findViewById(R.id.cdnScore)
             price = itemView.findViewById(R.id.price)
             weight = itemView.findViewById(R.id.weight)
             cdnId = itemView.findViewById(R.id.cdnId)
@@ -49,6 +51,7 @@ class ResultsAdapter(private var context: Context?, cardsModelArrayList: ArrayLi
         val model: ResultsModel = resultsModelArrayList!![position]
         holder.cdnName.text = context!!.getString(R.string.cdn_name, model.cdnName)
         holder.cdnSpeed.text = context!!.getString(R.string.cdn_speed, model.cdnSpeed.toString())
+        holder.cdnScore.text = context!!.getString(R.string.cdn_score, model.cdnScore.toString())
         holder.price.text = context!!.getString(R.string.cdn_price, model.cdnPrice.toString())
         holder.weight.text = context!!.getString(R.string.cdn_weight, model.cdnWeight.toString())
         holder.cdnId.text = context!!.getString(R.string.cdn_ID, model.cdnId.toString())
@@ -57,6 +60,7 @@ class ResultsAdapter(private var context: Context?, cardsModelArrayList: ArrayLi
             card!!.background.setColorFilter(Color.parseColor("#E32636"), PorterDuff.Mode.SRC_ATOP)
             holder.cdnName.setTextColor(Color.parseColor("#ffffff"))
             holder.cdnSpeed.setTextColor(Color.parseColor("#ffffff"))
+            holder.cdnScore.setTextColor(Color.parseColor("#ffffff"))
             holder.price.setTextColor(Color.parseColor("#ffffff"))
             holder.weight.setTextColor(Color.parseColor("#ffffff"))
             holder.cdnId.setTextColor(Color.parseColor("#ffffff"))

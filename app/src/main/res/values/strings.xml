@@ -5,6 +5,7 @@
     <string name="results">Results:</string>
     <string name="cdn_name">CDN Name: %1$s</string>
     <string name="cdn_speed">CDN Speed: %1$s ms</string>
+    <string name="cdn_score">CDN Score: %1$s</string>
     <string name="cdn_price">CDN Price: %1$s</string>
     <string name="cdn_country">Country: %1$s</string>
     <string name="cdn_weight">CDN Weight: %1$s</string>

@@ -54,7 +54,7 @@ class CDN {
                     val emptyArray = ArrayList<Results>()
                     val error = response.message()+" "+response.code()
                     emptyArray.add(
-                        Results(null, null, null, null, null, null, error)
+                        Results(null, null, null, null, null, null, null, error)
                     )
                     giveMeRes(emptyArray)
                     println("Responseee unsuccessfull "+response.message()+response.code())
@@ -64,7 +64,7 @@ class CDN {
             override fun onFailure(call: Call<GetEndpointsModel>, t: Throwable) {
                 val emptyArray = ArrayList<Results>()
                 emptyArray.add(
-                    Results(null, null, null, null, null, null, t.toString())
+                    Results(null, null, null, null, null, null, null, t.toString())
                 )
                 giveMeRes(emptyArray)
                 println("Responseee error 1 "+t)
@@ -111,20 +111,36 @@ class CDN {
                 ) {
                     if(response.isSuccessful){
                         println("res sent: "+ response.raw().sentRequestAtMillis + "res rec: "+ response.raw().receivedResponseAtMillis)
-                        val rezultat = (response.raw().receivedResponseAtMillis - response.raw().sentRequestAtMillis)
-                        println("Result: "+ rezultat)
-                        result.add(Results(rezultat,res.id,res.name,res.weight,res.price,res.url))
+                        val speedResult = (response.raw().receivedResponseAtMillis - response.raw().sentRequestAtMillis)
+                        val scoreResult = calculateScore(speedResult + res.price)
+                        println("Result: "+ scoreResult)
+                        result.add(Results(scoreResult,speedResult,res.id,res.name,res.weight,res.price,res.url))
                     } else {
-                        result.add(Results(null,res.id,res.name,res.weight,res.price,res.url, errors = response.code().toString()))
+                        result.add(Results(null, null,res.id,res.name,res.weight,res.price,res.url, errors = response.code().toString()))
                         println("Responseee unsuccessfull")
                     }
                 }
 
                 override fun onFailure(call: Call<UrlModel>, t: Throwable) {
-                    result.add(Results(null,res.id,res.name,res.weight,res.price,res.url, errors = t.toString()))
+                    result.add(Results(null, null,res.id,res.name,res.weight,res.price,res.url, errors = t.toString()))
                     println("Responseee error 2"+t)
                 }
             })
+        }
+    }
+
+    private fun calculateScore(score: Long): Long{
+        return when (score) {
+            in 1..300 -> 10
+            in 300..500 -> 9
+            in 500..700 -> 8
+            in 700..900 -> 7
+            in 900..1100 -> 6
+            in 1100..1400 -> 5
+            in 1400..1700 -> 4
+            in 1700..2100 -> 3
+            in 2100..2600 -> 2
+            else -> { 1 }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.android.example.cdnspeedtest
 
 class Results (
+    var score: Long?,
     var time: Long?,
     var id: Int?,
     var name: String?,
@@ -10,6 +11,6 @@ class Results (
     var errors: String? = ""
 ) {
     override fun toString(): String {
-        return "Results(time=$time, id=$id, name='$name', weight=$weight, price=$price, url='$url')"
+        return "Results(score=$score, time=$time, id=$id, name=$name, weight=$weight, price=$price, url=$url, errors=$errors)"
     }
 }

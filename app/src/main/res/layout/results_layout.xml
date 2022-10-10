@@ -59,6 +59,22 @@
         </Space>
 
         <TextView
+            android:id="@+id/cdnScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#29A0B1"
+            android:layout_gravity="center"
+            android:text="@string/cdn_speed"
+            />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" >
+        </Space>
+
+        <TextView
             android:id="@+id/price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
