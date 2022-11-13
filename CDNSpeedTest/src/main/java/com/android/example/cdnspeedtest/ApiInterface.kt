@@ -7,8 +7,8 @@ import java.util.*
 
 interface ApiInterface {
 
-    @GET("get-endpoints/{appKey}")
-    fun getEndpoints(@Path("appKey") appKey: String): Call<GetEndpointsModel>
+    @GET(".")
+    fun getEndpoints(): Call<GetEndpointsModel>
 
     @GET(".")
     fun getUrl(): Call<UrlModel>

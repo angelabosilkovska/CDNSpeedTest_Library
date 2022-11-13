@@ -55,6 +55,7 @@ class ResultsAdapter(private var context: Context?, cardsModelArrayList: ArrayLi
         holder.price.text = context!!.getString(R.string.cdn_price, model.cdnPrice.toString())
         holder.weight.text = context!!.getString(R.string.cdn_weight, model.cdnWeight.toString())
         holder.cdnId.text = context!!.getString(R.string.cdn_ID, model.cdnId.toString())
+
         if(!model.error.isNullOrEmpty()) {
             holder.cdnError.text = context!!.getString(R.string.cdn_Error, model.error.toString())
             card!!.background.setColorFilter(Color.parseColor("#E32636"), PorterDuff.Mode.SRC_ATOP)

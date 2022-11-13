@@ -21,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     var key1: String = "oHlEsC7CD3dwV1DZBcZ9WzJx8wsjAZf7"
     var key2: String = "key1"
     var key3: String = "key"
+    var endpoint: String = "get-endpoints/"
+    var baseUrl: String = "http://192.168.1.105:3000/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,13 +33,13 @@ class MainActivity : AppCompatActivity() {
         noResults = findViewById(R.id.noResults)
         progressBar = findViewById(R.id.progressBar)
 
-        var cdn = CDN(key1, this.applicationContext)
+        val cdn = CDN(key1, baseUrl, endpoint, this.applicationContext)
 
-        fun giveMeRes(rez: ArrayList<Results>):  ArrayList<Results>{
+        fun giveMeRes(res: ArrayList<Results>):  ArrayList<Results>{
 
-            if(rez.size != 0 && rez.isNotEmpty()) {
-                var resultsModelArrayList = ArrayList<ResultsModel>()
-                for (result in rez) {
+            if(res.size != 0 && res.isNotEmpty()) {
+                val resultsModelArrayList = ArrayList<ResultsModel>()
+                for (result in res) {
                     resultsModelArrayList.add(
                         ResultsModel(result.id, result.name, result.time, result.score, result.price, result.weight, result.url, result.errors)
                     )
@@ -56,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                 progressBar!!.visibility = View.GONE
                 noResults!!.visibility = View.VISIBLE
             }
-            return rez
+            return res
         }
 
         testButton!!.setOnClickListener {

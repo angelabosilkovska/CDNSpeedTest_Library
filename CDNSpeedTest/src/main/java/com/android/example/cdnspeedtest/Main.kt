@@ -22,57 +22,51 @@ import kotlin.collections.ArrayList
 class CDN {
 
     var key: String = ""
+    var retrofitBuilder: RetrofitBuilder? = null
+    var resultsUrl:String = ""
+    private lateinit var analytics: Analytics
 
-    constructor(appKey: String,ctx: Context){
+    constructor(appKey: String, baseUrl: String, endpoint: String, ctx: Context){
+        retrofitBuilder = RetrofitBuilder("$baseUrl$endpoint$appKey/")
         key = appKey
         initSegment(key,ctx)
     }
 
-    val retrofitBuilder = RetrofitBuilder()
-    var resultsUrl:String = ""
-    private lateinit var analytics:Analytics
-
     private fun initSegment(key:String, ctx:Context){
         analytics = Analytics(key, ctx){
-
         }
     }
 
     fun checkCdnSpeed(giveMeRes:(ArrayList<Results>)-> ArrayList<Results>) {
-        val call: Call<GetEndpointsModel> = retrofitBuilder.apiInterface.getEndpoints(key)
-        call.enqueue(object : Callback<GetEndpointsModel> {
-            override fun onResponse(
-                call: Call<GetEndpointsModel>,
-                response: Response<GetEndpointsModel>
-            ) {
-                if(response.isSuccessful){
-                    println("Responseee body"+ response.body()?.servers)
-                    val myEndpoints: List<UrlModel> = response.body()!!.servers
-                    resultsUrl = response.body()!!.reportingURL
-                    testCDNList(myEndpoints, giveMeRes)
-                } else {
-                    val emptyArray = ArrayList<Results>()
-                    val error = response.message()+" "+response.code()
-                    emptyArray.add(
-                        Results(null, null, null, null, null, null, null, error)
-                    )
-                    giveMeRes(emptyArray)
-                    println("Responseee unsuccessfull "+response.message()+response.code())
+        if(retrofitBuilder != null) {
+            val call: Call<GetEndpointsModel> = retrofitBuilder!!.apiInterface.getEndpoints()
+            call.enqueue(object : Callback<GetEndpointsModel> {
+                override fun onResponse(
+                    call: Call<GetEndpointsModel>,
+                    response: Response<GetEndpointsModel>
+                ) {
+                    if (response.isSuccessful) {
+                        val myEndpoints: List<UrlModel> = response.body()!!.servers
+                        resultsUrl = response.body()!!.reportingURL
+                        testCDNList(myEndpoints, giveMeRes)
+                    } else {
+                        val emptyArray = ArrayList<Results>()
+                        val error = response.message() + " " + response.code()
+                        emptyArray.add(Results(null, null, null, null, null, null, null, error))
+                        giveMeRes(emptyArray)
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<GetEndpointsModel>, t: Throwable) {
-                val emptyArray = ArrayList<Results>()
-                emptyArray.add(
-                    Results(null, null, null, null, null, null, null, t.toString())
-                )
-                giveMeRes(emptyArray)
-                println("Responseee error 1 "+t)
-            }
-        })
+                override fun onFailure(call: Call<GetEndpointsModel>, t: Throwable) {
+                    val emptyArray = ArrayList<Results>()
+                    emptyArray.add(Results(null, null, null, null, null, null, null, t.toString()))
+                    giveMeRes(emptyArray)
+                }
+            })
+        }
     }
 
-    fun testCDNList(myEndpoints: List<UrlModel>, giveMeRes:( ArrayList<Results>)-> ArrayList<Results>){
+    fun testCDNList(myEndpoints: List<UrlModel>, giveMeRes:(ArrayList<Results>)-> ArrayList<Results>){
 
         val result: ObservableList<Results> = ObservableArrayList<Results>()
         result.addOnListChangedCallback(object: ObservableList.OnListChangedCallback<ObservableList<Results>>(){
@@ -93,41 +87,73 @@ class CDN {
             override fun onItemRangeRemoved(sender: ObservableList<Results>?, positionStart: Int, itemCount: Int) {}
         })
 
-        myEndpoints.forEach{res ->
-            var retrofit = Retrofit.Builder()
-                .baseUrl(res.url+"/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(retrofitBuilder.okHttpClient)
-                .build()
+        if(retrofitBuilder != null) {
+            myEndpoints.forEach { res ->
+                var retrofit = Retrofit.Builder()
+                    .baseUrl(res.url + "/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .client(retrofitBuilder!!.okHttpClient)
+                    .build()
 
-            var apiInterface: ApiInterface = retrofit.create(ApiInterface::class.java)
+                var apiInterface: ApiInterface = retrofit.create(ApiInterface::class.java)
 
-            val call: Call<UrlModel> = apiInterface.getUrl()
-            call.enqueue(object : Callback<UrlModel> {
-                override fun onResponse(
-                    call: Call<UrlModel>,
-                    response: Response<UrlModel>
-                ) {
-                    if(response.isSuccessful){
-                        println("res sent: "+ response.raw().sentRequestAtMillis + "res rec: "+ response.raw().receivedResponseAtMillis)
-                        val speedResult = (response.raw().receivedResponseAtMillis - response.raw().sentRequestAtMillis)
-                        val scoreResult = calculateScore(speedResult + res.price)
-                        println("Result: "+ scoreResult)
-                        result.add(Results(scoreResult,speedResult,res.id,res.name,res.weight,res.price,res.url))
-                    } else {
-                        result.add(Results(null, null,res.id,res.name,res.weight,res.price,res.url, errors = response.code().toString()))
-                        println("Responseee unsuccessfull")
+                val call: Call<UrlModel> = apiInterface.getUrl()
+                call.enqueue(object : Callback<UrlModel> {
+                    override fun onResponse(
+                        call: Call<UrlModel>,
+                        response: Response<UrlModel>
+                    ) {
+                        if (response.isSuccessful) {
+                            val speedResult =
+                                (response.raw().receivedResponseAtMillis - response.raw().sentRequestAtMillis)
+                            val scoreResult = calculateScore(speedResult + res.price)
+                            result.add(
+                                Results(
+                                    scoreResult,
+                                    speedResult,
+                                    res.id,
+                                    res.name,
+                                    res.weight,
+                                    res.price,
+                                    res.url
+                                )
+                            )
+                        } else {
+                            result.add(
+                                Results(
+                                    null,
+                                    null,
+                                    res.id,
+                                    res.name,
+                                    res.weight,
+                                    res.price,
+                                    res.url,
+                                    errors = response.code().toString()
+                                )
+                            )
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<UrlModel>, t: Throwable) {
-                    result.add(Results(null, null,res.id,res.name,res.weight,res.price,res.url, errors = t.toString()))
-                    println("Responseee error 2"+t)
-                }
-            })
+                    override fun onFailure(call: Call<UrlModel>, t: Throwable) {
+                        result.add(
+                            Results(
+                                null,
+                                null,
+                                res.id,
+                                res.name,
+                                res.weight,
+                                res.price,
+                                res.url,
+                                errors = t.toString()
+                            )
+                        )
+                    }
+                })
+            }
         }
     }
+
 
     private fun calculateScore(score: Long): Long{
         return when (score) {
@@ -144,42 +170,47 @@ class CDN {
         }
     }
 
-    private fun sendResultsBack(rez: List<Results>){
+    private fun sendResultsBack(res: List<Results>){
 
-        rez.forEach{
+        res.forEach{
         analytics.track("CDNSpeedTest", buildJsonObject {
             put("CDN Name", it.name)
             put("CDN ID", it.id)
             put("CDN URL", it.url)
             put("CDN Speed", it.time)
+            put("CDN Score", it.score)
             put("CDN Weight", it.weight)
             put("CDN Price", it.price)
+            put("App Key", key)
         })}
 
-        var retrofit = Retrofit.Builder()
-            .baseUrl("$resultsUrl/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .client(retrofitBuilder.okHttpClient)
-            .build()
+        if(retrofitBuilder != null) {
 
-        var apiInterface: ApiInterface = retrofit.create(ApiInterface::class.java)
+            val retrofit = Retrofit.Builder()
+                .baseUrl("$resultsUrl/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(retrofitBuilder!!.okHttpClient)
+                .build()
 
-        val call: Call<List<Results>> = apiInterface.sendResults(rez)
-        call.enqueue(object : Callback<List<Results>> {
-            override fun onResponse(
-                call: Call<List<Results>>,
-                response: Response<List<Results>>) {
-                if(response.isSuccessful){
-                    println("Responseee isSuccessful")
-                } else {
-                    println("Responseee unsuccessfull")
+            val apiInterface: ApiInterface = retrofit.create(ApiInterface::class.java)
+
+            val call: Call<List<Results>> = apiInterface.sendResults(res)
+            call.enqueue(object : Callback<List<Results>> {
+                override fun onResponse(
+                    call: Call<List<Results>>,
+                    response: Response<List<Results>>
+                ) {
+                    if (response.isSuccessful) {
+
+                    } else {
+
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<List<Results>>, t: Throwable) {
-                println("Responseee error 3 "+t)
-            }
-        })
+                override fun onFailure(call: Call<List<Results>>, t: Throwable) {
+                }
+            })
+        }
     }
 }

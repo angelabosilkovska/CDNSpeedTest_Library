@@ -9,7 +9,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class RetrofitBuilder {
+class RetrofitBuilder(baseUrl: String) {
 
     var builder: OkHttpClient.Builder = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -19,14 +19,13 @@ class RetrofitBuilder {
 
     var okHttpClient: OkHttpClient = builder.build()
 
-
     var gson = GsonBuilder()
         .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
         .create()
 
     var retrofit = Retrofit.Builder()
 
-        .baseUrl("http://192.168.1.104:3000/")
+        .baseUrl(baseUrl)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(okHttpClient)
